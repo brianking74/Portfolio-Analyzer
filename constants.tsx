@@ -14,7 +14,7 @@ Fevertree,44%,45,1," $ 618,545.05 "
 Fifth Generation,48%,30,2," $ 80,407.70 "
 Fratelli Branca,36%,60,1," $ 107,036.88 "
 Haromex,36%,90,1," $ 30,720.18 "
-House of Hazelwood,14%,160,3," $ 8,761.82 "
+House of Hazelwood,14%,180,3," $ 8,761.82 "
 JC Master,33%,45,2," $ 29,105.36 "
 Kimbo,38%,90,2," $ 790,406.70 "
 LAIBA,31%,30,3," $ 2,779.64 "
@@ -45,11 +45,10 @@ export const BARRIER_COLORS: Record<number, string> = {
   [BarrierLevel.HARD]: '#ef4444' // red-500
 };
 
-// Map COD and PIA to specific numeric values beyond 120
-// We also need to handle the 160 case in the chart mapping logic
+// PIA and COD mapped to lowest values to appear first on the X-axis
 export const TERMS_MAPPING: Record<string, number> = {
-  'COD': 170,
-  'PIA': 200
+  'PIA': 0,
+  'COD': 15
 };
 
 export const REVENUE_SCALE_FACTOR = 0.05;

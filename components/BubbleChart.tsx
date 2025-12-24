@@ -42,10 +42,11 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
   const chartData: ChartDataPoint[] = data.map(p => {
     let xVal = p.creditTermsNumeric;
     
-    // Custom mapping for outliers to keep the requested order: 0 -> 120 -> outliers -> COD -> PIA
-    if (xVal > 120 && xVal < 170) {
-      // e.g. 160 days credit is mapped to 145 to sit between 120 and COD (170)
-      xVal = 145;
+    // If it's a standard day count (not COD/PIA which are mapped to 0, 15), 
+    // offset it by 30 to sit after COD on the axis
+    if (xVal > 15 || (p.creditTerms.toLowerCase().includes('0') && !p.creditTerms.toLowerCase().includes('c'))) {
+       // Offset standard days to start after COD (which is at 15)
+       xVal = xVal + 30;
     }
 
     return {
@@ -62,7 +63,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
 
   // Calculate mid-points for quadrant lines
   const avgMargin = 40; 
-  const avgTerms = 90; // Typical 90-day split
+  const avgTerms = 75; // Adjusted mid-point for new scale
 
   return (
     <div className="w-full h-[600px] bg-white rounded-xl shadow-sm border border-gray-100 p-6 relative">
@@ -88,17 +89,17 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ data }) => {
             type="number" 
             dataKey="x" 
             name="Credit Terms" 
-            domain={[0, 210]}
-            ticks={[0, 30, 60, 90, 120, 170, 200]}
+            domain={[0, 160]}
+            ticks={[0, 15, 30, 60, 90, 120, 150]}
             tick={{ fontSize: 11, fontWeight: 600, fill: '#94a3b8' }}
             tickFormatter={(val) => {
-              if (val === 170) return 'COD';
-              if (val === 200) return 'PIA';
-              if (val === 0) return '0';
-              return `${val}d`;
+              if (val === 0) return 'PIA';
+              if (val === 15) return 'COD';
+              if (val === 30) return '0d';
+              return `${val - 30}d`; // Un-offset the labels for standard days
             }}
           >
-            <Label value="Credit Terms (Partner Range ← → Risk/Immediate Range)" offset={-40} position="insideBottom" fill="#94a3b8" style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }} />
+            <Label value="Credit Terms Scale (First: Immediate → Last: Deferred)" offset={-40} position="insideBottom" fill="#94a3b8" style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }} />
           </XAxis>
           <YAxis 
             type="number" 
