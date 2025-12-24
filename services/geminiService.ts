@@ -1,6 +1,11 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { PrincipalData } from "../types";
+
+/**
+ * Declare process as a global to satisfy the TypeScript compiler (tsc).
+ * At build time, Vite replaces 'process.env.API_KEY' with the actual value from the environment.
+ */
+declare const process: any;
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
